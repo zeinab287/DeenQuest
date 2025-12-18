@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Five Pillars Sorting Game</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #00b09b 0%, #96c93d 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 400px;
+            margin: 0;
+            padding: 20px;
+        }
+        .game-container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 800px;
+            width: 100%;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h2 {
+            color: #00b09b;
+            margin: 0 0 10px 0;
+        }
+        .instructions {
+            background: #f0f9ff;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #0369a1;
+        }
+        .drop-zones {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .drop-zone {
+            background: #f8f9fa;
+            border: 3px dashed #cbd5e0;
+            border-radius: 10px;
+            padding: 15px 10px;
+            min-height: 100px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        .drop-zone.drag-over {
+            background: #e0f2fe;
+            border-color: #00b09b;
+            transform: scale(1.05);
+        }
+        .drop-zone.filled {
+            background: #d1fae5;
+            border-color: #10b981;
+            border-style: solid;
+        }
+        .pillar-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #00b09b;
+            margin-bottom: 5px;
+        }
+        .pillar-label {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        .items-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            min-height: 80px;
+            padding: 20px;
+            background: #fef3c7;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .draggable-item {
+            background: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            border: 2px solid #00b09b;
+            cursor: move;
+            font-weight: 600;
+            color: #00b09b;
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+        .draggable-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,176,155,0.3);
+        }
+        .draggable-item.dragging {
+            opacity: 0.5;
+        }
+        .check-btn {
+            width: 100%;
+            padding: 15px;
+            background: #00b09b;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .check-btn:hover:not(:disabled) {
+            background: #008f7f;
+            transform: translateY(-2px);
+        }
+        .check-btn:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .result-message {
+            display: none;
+            text-align: center;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        .result-message.success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        .result-message.error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        @media (max-width: 600px) {
+            .drop-zones {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="game-container">
+    <div id="game-content">
+        <div class="header">
+            <h2><i class="fas fa-mosque me-2"></i>Sort the Five Pillars of Islam</h2>
+        </div>
+
+        <div class="instructions">
+            <i class="fas fa-info-circle me-2"></i>
+            Drag each pillar to its correct position (1st to 5th)
+        </div>
+
+        <div class="drop-zones" id="dropZones">
+            <div class="drop-zone" data-position="1">
+                <div class="pillar-number">1st</div>
+                <div class="pillar-label">First Pillar</div>
+            </div>
+            <div class="drop-zone" data-position="2">
+                <div class="pillar-number">2nd</div>
+                <div class="pillar-label">Second Pillar</div>
+            </div>
+            <div class="drop-zone" data-position="3">
+                <div class="pillar-number">3rd</div>
+                <div class="pillar-label">Third Pillar</div>
+            </div>
+            <div class="drop-zone" data-position="4">
+                <div class="pillar-number">4th</div>
+                <div class="pillar-label">Fourth Pillar</div>
+            </div>
+            <div class="drop-zone" data-position="5">
+                <div class="pillar-number">5th</div>
+                <div class="pillar-label">Fifth Pillar</div>
+            </div>
+        </div>
+
+        <div class="items-container" id="itemsContainer"></div>
+
+        <button class="check-btn" id="checkBtn" disabled>Check My Answer</button>
+        <div class="result-message" id="resultMessage"></div>
+    </div>
+</div>
+
+<script>
+console.log(' Five Pillars Sorting Game - Starting...');
+
+const pillars = [
+    { id: 1, name: 'Shahada (Faith)', position: 1 },
+    { id: 2, name: 'Salah (Prayer)', position: 2 },
+    { id: 3, name: 'Zakat (Charity)', position: 3 },
+    { id: 4, name: 'Sawm (Fasting)', position: 4 },
+    { id: 5, name: 'Hajj (Pilgrimage)', position: 5 }
+];
+
+const itemsContainer = document.getElementById('itemsContainer');
+const dropZones = document.querySelectorAll('.drop-zone');
+const checkBtn = document.getElementById('checkBtn');
+const resultMessage = document.getElementById('resultMessage');
+
+let attempts = 0;
+let gameWonSent = false;
+
+// shuffle and create items
+function initGame() {
+    itemsContainer.innerHTML = '';
+    const shuffled = [...pillars].sort(() => Math.random() - 0.5);
+    
+    shuffled.forEach(pillar => {
+        const item = document.createElement('div');
+        item.className = 'draggable-item';
+        item.textContent = pillar.name;
+        item.draggable = true;
+        item.dataset.pillarId = pillar.id;
+        item.dataset.correctPosition = pillar.position;
+        
+        item.addEventListener('dragstart', dragStart);
+        item.addEventListener('dragend', dragEnd);
+        
+        itemsContainer.appendChild(item);
+    });
+    
+    console.log('Game initialized');
+}
+
+// drag and drop handlers
+function dragStart(e) {
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/html', this.innerHTML);
+    e.dataTransfer.setData('pillarId', this.dataset.pillarId);
+    e.dataTransfer.setData('correctPosition', this.dataset.correctPosition);
+    this.classList.add('dragging');
+}
+
+function dragEnd() {
+    this.classList.remove('dragging');
+}
+
+dropZones.forEach(zone => {
+    zone.addEventListener('dragover', e => {
+        e.preventDefault();
+        zone.classList.add('drag-over');
+    });
+
+    zone.addEventListener('dragleave', () => {
+        zone.classList.remove('drag-over');
+    });
+
+    zone.addEventListener('drop', e => {
+        e.preventDefault();
+        zone.classList.remove('drag-over');
+        
+        // remove existing item if any
+        const existing = zone.querySelector('.draggable-item');
+        if (existing) {
+            itemsContainer.appendChild(existing);
+        }
+
+        // add new item
+        const pillarId = e.dataTransfer.getData('pillarId');
+        const correctPosition = e.dataTransfer.getData('correctPosition');
+        const draggingItem = document.querySelector('.dragging');
+        
+        if (draggingItem) {
+            zone.appendChild(draggingItem);
+            zone.classList.add('filled');
+            checkIfAllPlaced();
+        }
+    });
+});
+
+function checkIfAllPlaced() {
+    const allFilled = Array.from(dropZones).every(zone => 
+        zone.querySelector('.draggable-item')
+    );
+    checkBtn.disabled = !allFilled;
+}
+
+checkBtn.addEventListener('click', checkAnswer);
+
+function checkAnswer() {
+    attempts++;
+    let correct = true;
+
+    dropZones.forEach(zone => {
+        const item = zone.querySelector('.draggable-item');
+        const zonePosition = zone.dataset.position;
+        const itemPosition = item.dataset.correctPosition;
+
+        if (zonePosition !== itemPosition) {
+            correct = false;
+        }
+    });
+
+    if (correct) {
+        resultMessage.className = 'result-message success';
+        resultMessage.innerHTML = '<i class="fas fa-check-circle me-2"></i>Correct! Masha\'Allah!';
+        resultMessage.style.display = 'block';
+        checkBtn.disabled = true;
+        
+        console.log('All pillars sorted correctly!');
+        
+        setTimeout(() => {
+            gameComplete();
+        }, 1500);
+    } else {
+        resultMessage.className = 'result-message error';
+        resultMessage.innerHTML = '<i class="fas fa-times-circle me-2"></i>Not quite right. Try again!';
+        resultMessage.style.display = 'block';
+        
+        console.log('Incorrect sorting, attempt:', attempts);
+        
+        setTimeout(() => {
+            resultMessage.style.display = 'none';
+        }, 2000);
+    }
+}
+
+function gameComplete() {
+    console.log('Game completed successfully! Sending gameWon to parent');
+    
+    // send message to parent 
+    if (!gameWonSent && window.parent) {
+        gameWonSent = true;
+        console.log('Sending gameWon message');
+        window.parent.postMessage('gameWon', '*');
+    }
+}
+
+// initialize the game
+initGame();
+</script>
+</body>
+</html>

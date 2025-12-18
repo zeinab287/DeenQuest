@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Match Game</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: transparent;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 400px;
+            margin: 0;
+            padding: 20px;
+        }
+        .game-container { 
+            text-align: center;
+            width: 100%;
+            max-width: 650px;
+        }
+        .game-info {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .game-info h3 {
+            color: #10b981;
+            margin: 0 0 5px 0;
+        }
+        .matches-counter {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #059669;
+        }
+        .game-board {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin: 20px auto;
+        }
+        .memory-card {
+            height: 100px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.5s;
+            cursor: pointer;
+            perspective: 1000px;
+        }
+        @media (hover: hover) { 
+            .memory-card:hover:not(.flip) { 
+                transform: scale(1.05); 
+            } 
+        }
+        .memory-card:active { transform: scale(0.97); }
+        .memory-card.flip { 
+            transform: rotateY(180deg);
+            pointer-events: none;
+        }
+        .memory-card.matched {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+        .card-face {
+            width: 100%; 
+            height: 100%;
+            position: absolute;
+            top: 0; 
+            left: 0;
+            backface-visibility: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+        }
+        .card-front {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            transform: rotateY(180deg);
+            color: white;
+            font-size: 0.9rem;
+            overflow-wrap: break-word;
+        }
+        .card-front.arabic { 
+            font-size: 1.6rem;
+            line-height: 1.2;
+        }
+        .card-back { 
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: #ecf0f1;
+            font-size: 2rem;
+        }
+        @media (max-width: 600px) {
+            .game-board {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            .memory-card {
+                height: 80px;
+            }
+            .card-front {
+                font-size: 0.75rem;
+            }
+            .card-front.arabic {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="game-container">
+    <div class="game-info" id="gameInfo">
+        <h3><i class="fas fa-book-quran me-2"></i>Match Allah's Names</h3>
+        <div class="matches-counter">
+            Matches Found: <span id="matchCounter">0</span> / <span id="totalPairs">6</span>
+        </div>
+    </div>
+    
+    <div class="game-board" id="gameBoard"></div>
+</div>
+
+<script>
+console.log('Memory Match Game - Starting...');
+
+const dataPairs = [
+    { id: 1, content: 'الله', type: 'arabic' }, 
+    { id: 1, content: 'The One True God', type: 'text' },
+    { id: 2, content: 'الرَّحْمَن', type: 'arabic' }, 
+    { id: 2, content: 'The Most Gracious', type: 'text' },
+    { id: 3, content: 'الرَّحِيم', type: 'arabic' }, 
+    { id: 3, content: 'The Most Merciful', type: 'text' },
+    { id: 4, content: 'المَلِك', type: 'arabic' }, 
+    { id: 4, content: 'The King', type: 'text' },
+    { id: 5, content: 'القُدُّوس', type: 'arabic' }, 
+    { id: 5, content: 'The Most Holy', type: 'text' },
+    { id: 6, content: 'السَّلَام', type: 'arabic' }, 
+    { id: 6, content: 'Source of Peace', type: 'text' }
+];
+
+const gameBoard = document.getElementById('gameBoard');
+const matchCounter = document.getElementById('matchCounter');
+const totalPairsEl = document.getElementById('totalPairs');
+
+let hasFlippedCard = false;
+let lockBoard = false;
+let firstCard = null;
+let secondCard = null;
+let matchesFound = 0;
+let gameWonSent = false;
+const totalPairs = 6;
+
+totalPairsEl.textContent = totalPairs;
+
+function initGame() {
+    gameBoard.innerHTML = '';
+    matchesFound = 0;
+    gameWonSent = false;
+    
+    console.log('Initializing game with', totalPairs, 'pairs');
+    
+    // shuffle cards
+    const shuffled = [...dataPairs].sort(() => 0.5 - Math.random());
+    
+    // create card elements
+    shuffled.forEach(data => {
+        const card = document.createElement('div');
+        card.classList.add('memory-card');
+        card.dataset.pairId = data.id;
+        
+        const arabicClass = data.type === 'arabic' ? 'arabic' : '';
+        card.innerHTML = `
+            <div class="card-face card-front ${arabicClass}">${data.content}</div>
+            <div class="card-face card-back"><i class="fas fa-question"></i></div>
+        `;
+        card.addEventListener('click', flipCard);
+        gameBoard.appendChild(card);
+    });
+    
+    console.log('Game initialized');
+}
+
+function flipCard() {
+    if (lockBoard) return;
+    if (this === firstCard) return;
+    if (this.classList.contains('matched')) return;
+
+    this.classList.add('flip');
+
+    if (!hasFlippedCard) {
+        hasFlippedCard = true;
+        firstCard = this;
+        return;
+    }
+    
+    secondCard = this;
+    checkForMatch();
+}
+
+function checkForMatch() {
+    const isMatch = firstCard.dataset.pairId === secondCard.dataset.pairId;
+    
+    if (isMatch) {
+        disableCards();
+    } else {
+        unflipCards();
+    }
+}
+
+function disableCards() {
+    firstCard.removeEventListener('click', flipCard);
+    secondCard.removeEventListener('click', flipCard);
+    firstCard.classList.add('matched');
+    secondCard.classList.add('matched');
+    
+    matchesFound++;
+    matchCounter.textContent = matchesFound;
+    
+    console.log('Match found! Total:', matchesFound, '/', totalPairs);
+    
+    resetBoard();
+    
+    // Check if all pairs are matched
+    if (!gameWonSent && matchesFound === totalPairs) {
+        console.log('All pairs matched!');
+        setTimeout(gameComplete, 800);
+    }
+}
+
+function unflipCards() {
+    lockBoard = true;
+    setTimeout(() => {
+        firstCard.classList.remove('flip');
+        secondCard.classList.remove('flip');
+        resetBoard();
+    }, 1000);
+}
+
+function resetBoard() {
+    hasFlippedCard = false;
+    lockBoard = false;
+    firstCard = null;
+    secondCard = null;
+}
+
+function gameComplete() {
+    // final safety check
+    if (matchesFound !== totalPairs) {
+        console.error('Game complete called incorrectly!');
+        return;
+    }
+    
+    console.log('Game completed! Sending gameWon to parent');
+    
+    // send message to parent 
+    if (!gameWonSent && window.parent) {
+        gameWonSent = true;
+        console.log('Sending gameWon message');
+        window.parent.postMessage('gameWon', '*');
+    }
+}
+
+// initialize the game
+initGame();
+</script>
+</body>
+</html>
