@@ -3,11 +3,12 @@
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
 try {
-    // Try to get credentials from environment variables (Best Practice)
-    $host = getenv('DB_HOST') ?: "localhost"; 
-    $user = getenv('DB_USER') ?: "zeinab.hamidou";
-    $password = getenv('DB_PASSWORD') ?: "@M@dou2001";
-    $database = getenv('DB_NAME') ?: "webtech_2025A_zeinab_hamidou";
+    // Database credentials - prioritize environment variables for production (e.g., live server)
+// If environment variables are not set, use these fallback values for local development
+$host = getenv('DB_HOST') ?: "sql112.infinityfree.com";  // InfinityFree host
+$user = getenv('DB_USER') ?: "if0_40716042";             // InfinityFree username
+$password = getenv('DB_PASSWORD') ?: "YOUR_INFINITYFREE_PASSWORD_HERE"; // ⚠️ REPLACE THIS!
+$database = getenv('DB_NAME') ?: "if0_40716042_webtech_2025a_zeinab_hamidou"; // InfinityFree database
 
     // Attempt connection
     $conn = new mysqli($host, $user, $password, $database);
