@@ -8,7 +8,7 @@ require_once '../config/db.php';
 
 // fetch existing game types from the 'type' column
 $existingTypes = [];
-$typeSql = "SELECT DISTINCT type FROM Game WHERE type IS NOT NULL AND type != '' ORDER BY type ASC";
+$typeSql = "SELECT DISTINCT type FROM game WHERE type IS NOT NULL AND type != '' ORDER BY type ASC";
 $typeResult = $conn->query($typeSql);
 if ($typeResult) {
     while ($row = $typeResult->fetch_assoc()) {
@@ -21,7 +21,7 @@ if ($typeResult) {
 // fetch data
 if (!isset($_GET['id'])) { header("Location: manage_games.php"); exit(); }
 $gameId = intval($_GET['id']);
-$stmt = $conn->prepare("SELECT * FROM Game WHERE game_id = ?");
+$stmt = $conn->prepare("SELECT * FROM game WHERE game_id = ?");
 $stmt->bind_param("i", $gameId);
 $stmt->execute();
 $result = $stmt->get_result();

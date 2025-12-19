@@ -24,7 +24,7 @@ $conn->begin_transaction();
 
 try {
     // fetch game info
-    $stmt = $conn->prepare("SELECT xp_reward FROM Game WHERE game_id = ?");
+    $stmt = $conn->prepare("SELECT xp_reward FROM game WHERE game_id = ?");
     $stmt->bind_param("i", $gameId);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -38,7 +38,7 @@ try {
     $stmt->close();
     
     // check if user already completed this game
-    $checkStmt = $conn->prepare("SELECT completion_id, xp_awarded FROM GameCompletion WHERE user_id = ? AND game_id = ?");
+    $checkStmt = $conn->prepare("SELECT completion_id, xp_awarded FROM gamecompletion WHERE user_id = ? AND game_id = ?");
     $checkStmt->bind_param("ii", $userId, $gameId);
     $checkStmt->execute();
     $completionResult = $checkStmt->get_result();
@@ -60,7 +60,7 @@ try {
     // when first time completion, award XP
     if ($xpReward > 0) {
         // update user XP
-        $updateStmt = $conn->prepare("UPDATE User SET xp = xp + ? WHERE user_id = ?");
+        $updateStmt = $conn->prepare("UPDATE user SET xp = xp + ? WHERE user_id = ?");
         $updateStmt->bind_param("ii", $xpReward, $userId);
         $updateStmt->execute();
         $updateStmt->close();
@@ -85,7 +85,7 @@ try {
         AND c.is_active = 1
         AND c.end_date >= ?
         AND NOT EXISTS (
-            SELECT 1 FROM UserChallengeProgress ucp 
+            SELECT 1 FROM userchallengeprogress ucp 
             WHERE ucp.user_id = ? AND ucp.challenge_id = c.challenge_id
         )
     ");
@@ -102,13 +102,13 @@ try {
         $bonusXP = $challenge['bonus_xp'];
         
         // award challenge bonus XP
-        $bonusStmt = $conn->prepare("UPDATE User SET xp = xp + ? WHERE user_id = ?");
+        $bonusStmt = $conn->prepare("UPDATE user SET xp = xp + ? WHERE user_id = ?");
         $bonusStmt->bind_param("ii", $bonusXP, $userId);
         $bonusStmt->execute();
         $bonusStmt->close();
         
         // record challenge completion
-        $challengeInsert = $conn->prepare("INSERT INTO UserChallengeProgress (user_id, challenge_id) VALUES (?, ?)");
+        $challengeInsert = $conn->prepare("INSERT INTO userchallengeprogress (user_id, challenge_id) VALUES (?, ?)");
         $challengeInsert->bind_param("ii", $userId, $challengeId);
         $challengeInsert->execute();
         $challengeInsert->close();

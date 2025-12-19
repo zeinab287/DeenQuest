@@ -8,7 +8,7 @@ require_once '../../config/db.php';
 $userId = $_SESSION['user_id'];
 
 // fetch user's reflections
-$sql = "SELECT * FROM Reflection WHERE user_id = ? ORDER BY created_at DESC";
+$sql = "SELECT * FROM reflection WHERE user_id = ? ORDER BY created_at DESC";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $userId);
 $stmt->execute();

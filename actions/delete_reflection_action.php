@@ -16,7 +16,7 @@ if (isset($_POST['reflection_id'])) {
 
     // prepare DELETE query for Reflection
     // include "AND user_id = ?" to ensure the user can only delete a reflection that belongs to him/her.
-    $sql = "DELETE FROM Reflection WHERE reflection_id = ? AND user_id = ?";
+    $sql = "DELETE FROM reflection WHERE reflection_id = ? AND user_id = ?";
     
     if ($stmt = $conn->prepare($sql)) {
         $stmt->bind_param("ii", $reflectionId, $userId);

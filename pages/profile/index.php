@@ -35,8 +35,8 @@ if ($next_rank_xp > $current_xp) {
 }
 
 
-// fetch all badges
-$sql = "SELECT * FROM Badge ORDER BY xp_required ASC";
+// fetch earned badges
+$sql = "SELECT * FROM badge ORDER BY xp_required ASC";
 $result = $conn->query($sql);
 ?>
 

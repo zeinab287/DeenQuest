@@ -8,9 +8,10 @@ require_once '../../config/db.php';
 $userId = $_SESSION['user_id'];
 
 // fetch completed challenges by joining UserChallengeProgress with the Challenge table
-$sql = "SELECT c.title, c.description, c.xp_reward, ucp.completed_at, c.activity_type
-        FROM UserChallengeProgress ucp
-        JOIN Challenge c ON ucp.challenge_id = c.challenge_id
+$sql = "SELECT c.title, c.description, challenge.xp_reward, ucp.completed_at,
+        challenge.activity_type
+        FROM userchallengeprogress ucp
+        JOIN challenge ON ucp.challenge_id = challenge.challenge_id
         WHERE ucp.user_id = ?
         ORDER BY ucp.completed_at DESC";
 

@@ -22,7 +22,8 @@ $total_questions = 0;
 
 // grade the quiz
 // fetch correct answers for this quest from database
-$sql = "SELECT question_id, correct_option FROM QuizQuestion WHERE quest_id = ?";
+    // fetch correct option
+    $sql = "SELECT question_id, correct_option FROM quizquestion WHERE quest_id = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $quest_id);
 $stmt->execute();
@@ -55,7 +56,7 @@ if ($score > 0) {
     
     // has user already completed the quiz stage for this quest?
     // check the progress table.
-    $checkSql = "SELECT progress_id FROM Progress WHERE user_id = ? AND quest_id = ? AND progress_stage IN ('quiz_completed', 'completed')";
+    $checkSql = "SELECT progress_id FROM progress WHERE user_id = ? AND quest_id = ? AND progress_stage IN ('quiz_completed', 'completed')";
     $checkStmt = $conn->prepare($checkSql);
     $checkStmt->bind_param("ii", $user_id, $quest_id);
     $checkStmt->execute();
@@ -74,8 +75,8 @@ if ($score > 0) {
         $xp_reward = $questData['xp_reward'];
         $xpStmt->close();
         
-        // update user table: add XP to their total
-        $updateUserSql = "UPDATE User SET xp = xp + ? WHERE user_id = ?";
+        // update user table:        // Update user XP
+        $updateUserSql = "UPDATE user SET xp = xp + ? WHERE user_id = ?";
         $updateUserStmt = $conn->prepare($updateUserSql);
         $updateUserStmt->bind_param("ii", $xp_reward, $user_id);
         $updateUserStmt->execute();

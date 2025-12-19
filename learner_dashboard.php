@@ -35,7 +35,7 @@ if ($currentXp >= 600) {
 // get earned badges count
 $earnedBadges = 0;
 $stmt = $conn->prepare(
-    'SELECT COUNT(*) AS badge_count FROM Badge WHERE xp_required <= ?'
+    'SELECT COUNT(*) AS badge_count FROM badge WHERE xp_required <= ?'
 );
 if ($stmt) {
     $stmt->bind_param('i', $currentXp);

@@ -6,9 +6,8 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'learner') {
 }
 require_once '../../config/db.php';
 
-//fetch quests that have quiz questions
-
-$sql = "SELECT * FROM Quest q WHERE EXISTS (SELECT 1 FROM QuizQuestion qq WHERE qq.quest_id = q.quest_id) ORDER BY q.level ASC, q.subject ASC";
+// fetch all quests that have quizzes
+$sql = "SELECT * FROM quest q WHERE EXISTS (SELECT 1 FROM quizquestion qq WHERE qq.quest_id = q.quest_id) ORDER BY q.level ASC, q.subject ASC";
 $result = $conn->query($sql);
 
 $pageTitle = "All Available Quizzes";

@@ -9,7 +9,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
 
 if (isset($_GET['id'])) {
     $badgeId = intval($_GET['id']);
-    $stmt = $conn->prepare("DELETE FROM Badge WHERE badge_id = ?");
+    $stmt = $conn->prepare("DELETE FROM badge WHERE badge_id = ?");
     $stmt->bind_param("i", $badgeId);
     if ($stmt->execute()) {
         $_SESSION['success_message'] = "Badge deleted successfully.";

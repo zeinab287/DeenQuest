@@ -29,7 +29,7 @@ if ($password !== $confirm_password) {
 
 
 // check if the email already exists in the database
-$checkQuery = "SELECT user_id FROM User WHERE email = ?";
+$checkQuery = "SELECT user_id FROM user WHERE email = ?";
 $stmt = $conn->prepare($checkQuery);
 
 if ($stmt) {
@@ -57,7 +57,7 @@ if ($stmt) {
 $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
 // prepare the insert query
-$insertQuery = "INSERT INTO User (name, email, password_hash, role) VALUES (?, ?, ?, ?)";
+$insertQuery = "INSERT INTO user (name, email, password_hash, role) VALUES (?, ?, ?, ?)";
 $stmt = $conn->prepare($insertQuery);
 
 if ($stmt) {

@@ -10,7 +10,7 @@ $pageTitle = "Manage Users";
 include('../includes/header.php');
 
 // fetch all users: newest first
-$sql = "SELECT user_id, name, email, role, xp, created_at FROM User ORDER BY created_at DESC";
+$sql = "SELECT user_id, name, email, role, xp, created_at FROM user ORDER BY created_at DESC";
 $result = $conn->query($sql);
 ?>
 

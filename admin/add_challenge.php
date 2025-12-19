@@ -6,7 +6,8 @@ require_once '../config/db.php';
 
 // fetch all quests and games for the dropdown lists
 $quests = $conn->query("SELECT quest_id, title FROM Quest ORDER BY title ASC");
-$games = $conn->query("SELECT game_id, title FROM Game ORDER BY title ASC");
+// fetch games for selection
+$games = $conn->query("SELECT game_id, title FROM game ORDER BY title ASC");
 
 $pageTitle = "Create Challenge";
 include('../includes/header.php');

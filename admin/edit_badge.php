@@ -7,7 +7,8 @@ require_once '../config/db.php';
 // fetch existing badge data
 if (!isset($_GET['id'])) { header("Location: manage_badges.php"); exit(); }
 $badgeId = intval($_GET['id']);
-$stmt = $conn->prepare("SELECT * FROM Badge WHERE badge_id = ?");
+// fetch badge data
+$stmt = $conn->prepare("SELECT * FROM badge WHERE badge_id = ?");
 $stmt->bind_param("i", $badgeId);
 $stmt->execute();
 $badge = $stmt->get_result()->fetch_assoc();

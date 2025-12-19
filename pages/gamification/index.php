@@ -8,8 +8,8 @@ require_once '../../config/db.php';
 $userId = $_SESSION['user_id'];
 
 // fetch user's Current total XP
-// fetch fresh from database to ensure accuracy
-$stmtUsr = $conn->prepare("SELECT xp, name FROM User WHERE user_id = ?");
+// get user xp and name
+$stmtUsr = $conn->prepare("SELECT xp, name FROM user WHERE user_id = ?");
 $stmtUsr->bind_param("i", $userId);
 $stmtUsr->execute();
 $userResult = $stmtUsr->get_result();
@@ -45,7 +45,7 @@ if ($progressPercentage > 100) $progressPercentage = 100;
 
 
 // fetch all badges
-$sqlBadges = "SELECT * FROM Badge ORDER BY xp_required ASC";
+$sqlBadges = "SELECT * FROM badge ORDER BY xp_required ASC";
 $resultBadges = $conn->query($sqlBadges);
 $totalBadges = $resultBadges->num_rows;
 $unlockedCount = 0;

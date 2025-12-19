@@ -19,7 +19,7 @@ if (isset($_GET['id'])) {
 
     // perform the deletion. due to ON DELETE CASCADE relationships in the database, this will automatically 
     // delete user's progress, reflections, quiz history, etc.
-    $stmt = $conn->prepare("DELETE FROM User WHERE user_id = ?");
+    $stmt = $conn->prepare("DELETE FROM user WHERE user_id = ?");
     $stmt->bind_param("i", $userIdToDelete);
     
     if ($stmt->execute()) {

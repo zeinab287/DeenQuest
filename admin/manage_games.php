@@ -10,7 +10,7 @@ $pageTitle = "Manage Games";
 include('../includes/header.php');
 
 // fetch all games from database
-$sql = "SELECT * FROM Game ORDER BY subject ASC, difficulty_level ASC";
+$sql = "SELECT * FROM game ORDER BY subject ASC, difficulty_level ASC";
 $result = $conn->query($sql);
 ?>
 

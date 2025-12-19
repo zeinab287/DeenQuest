@@ -9,7 +9,7 @@ require_once '../config/db.php';
 // fetch user data
 if (!isset($_GET['id'])) { header("Location: manage_users.php"); exit(); }
 $userIdToEdit = intval($_GET['id']);
-$stmt = $conn->prepare("SELECT * FROM User WHERE user_id = ?");
+$stmt = $conn->prepare("SELECT * FROM user WHERE user_id = ?");
 $stmt->bind_param("i", $userIdToEdit);
 $stmt->execute();
 $result = $stmt->get_result();

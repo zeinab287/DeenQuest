@@ -9,7 +9,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
 
 if (isset($_GET['id'])) {
     $gameId = intval($_GET['id']);
-    $sql = "DELETE FROM Game WHERE game_id = ?";
+    $sql = "DELETE FROM game WHERE game_id = ?";
     if ($stmt = $conn->prepare($sql)) {
         $stmt->bind_param("i", $gameId);
         if ($stmt->execute()) {

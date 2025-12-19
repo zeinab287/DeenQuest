@@ -19,7 +19,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // prepare SQL query to find user by email
     // select the role here so we can check it later.
-    $sql = "SELECT user_id, name, password_hash, role, xp FROM User WHERE email = ?";
+    $sql = "SELECT user_id, name, password_hash, role, xp FROM user WHERE email = ?";
     
     if ($stmt = $conn->prepare($sql)) {
         $stmt->bind_param("s", $email);

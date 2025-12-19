@@ -25,8 +25,8 @@ if ($questionId <= 0) {
     exit();
 }
 
-// perform Deletion
-$sql = "DELETE FROM QuizQuestion WHERE question_id = ?";
+// perform    // delete query
+    $sql = "DELETE FROM quizquestion WHERE question_id = ?";
 
 if ($stmt = $conn->prepare($sql)) {
     $stmt->bind_param("i", $questionId);

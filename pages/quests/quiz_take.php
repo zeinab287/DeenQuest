@@ -29,7 +29,7 @@ $stmtQ->close();
 
 
 // fetch questions for this quest ID
-$sql = "SELECT * FROM QuizQuestion WHERE quest_id = ?";
+$sql = "SELECT * FROM quizquestion WHERE quest_id = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $quest_id);
 $stmt->execute();

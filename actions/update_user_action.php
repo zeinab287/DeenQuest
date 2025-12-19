@@ -32,7 +32,7 @@ if ($userIdToUpdate == $_SESSION['user_id'] && $role !== 'admin') {
 
 
 // UPDATE database
-$sql = "UPDATE User SET name = ?, email = ?, role = ?, xp = ? WHERE user_id = ?";
+$sql = "UPDATE user SET name = ?, email = ?, role = ?, xp = ? WHERE user_id = ?";
 if ($stmt = $conn->prepare($sql)) {
     // 'sssii' = string, string, string, int, int
     $stmt->bind_param("sssii", $name, $email, $role, $xp, $userIdToUpdate);

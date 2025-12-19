@@ -19,8 +19,8 @@ if ($questId <= 0 || empty($userAnswers)) {
 
 // fetch correct answers and base XP reward for this Quest
 $sql = "SELECT q.question_id, q.correct_option, qt.xp_reward
-        FROM QuizQuestion q
-        JOIN Quest qt ON q.quest_id = qt.quest_id
+        FROM quizquestion q
+        JOIN quest qt ON q.quest_id = qt.quest_id
         WHERE q.quest_id = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $questId);
@@ -61,7 +61,7 @@ $xpEarned = 0;
 if ($passed) {
     // check if user have passed this before and earned XP (xp_earned > 0)
     // use SELECT 1 for efficiency as i just need to know if a row exists.
-    $checkPrevSql = "SELECT 1 FROM UserQuestProgress WHERE user_id = ? AND quest_id = ? AND xp_earned > 0 LIMIT 1";
+    $checkPrevSql = "SELECT 1 FROM userquestprogress WHERE user_id = ? AND quest_id = ? AND xp_earned > 0 LIMIT 1";
     $stmtCheck = $conn->prepare($checkPrevSql);
     $stmtCheck->bind_param("ii", $userId, $questId);
     $stmtCheck->execute();
@@ -81,7 +81,7 @@ if ($passed) {
 }
 
 // record quest result in database using the calculated $xpEarned
-$insertSql = "INSERT INTO UserQuestProgress (user_id, quest_id, score, xp_earned) VALUES (?, ?, ?, ?)";
+$insertSql = "INSERT INTO userquestprogress (user_id, quest_id, score, xp_earned) VALUES (?, ?, ?, ?)";
 $stmtInsert = $conn->prepare($insertSql);
 $stmtInsert->bind_param("iiii", $userId, $questId, $scorePercentage, $xpEarned);
 $stmtInsert->execute();
@@ -91,7 +91,7 @@ $stmtInsert->close();
 // award XP to user account and check challenges if they earned any XP
 if ($xpEarned > 0) {
     // award the calculated Quest XP (either full or 0) to user account
-    $updateXpSql = "UPDATE User SET xp = xp + ? WHERE user_id = ?";
+    $updateXpSql = "UPDATE user SET xp = xp + ? WHERE user_id = ?";
     $stmtXp = $conn->prepare($updateXpSql);
     $stmtXp->bind_param("ii", $xpEarned, $userId);
     $stmtXp->execute();
@@ -118,14 +118,14 @@ if ($xpEarned > 0) {
         $challengeBonusXp = $challengeData['xp_reward'];
 
         // check if user already completed this specific challenge
-        $checkProgSql = "SELECT 1 FROM UserChallengeProgress WHERE user_id = ? AND challenge_id = ?";
+        $checkProgSql = "SELECT 1 FROM userchallengeprogress WHERE user_id = ? AND challenge_id = ?";
         $stmtCheck = $conn->prepare($checkProgSql);
         $stmtCheck->bind_param("ii", $userId, $challengeId);
         $stmtCheck->execute();
 
         if ($stmtCheck->get_result()->num_rows === 0) {
             // mark challenge as complete
-            $insertProgSql = "INSERT INTO UserChallengeProgress (user_id, challenge_id) VALUES (?, ?)";
+            $insertProgSql = "INSERT INTO userchallengeprogress (user_id, challenge_id) VALUES (?, ?)";
             $stmtProg = $conn->prepare($insertProgSql);
             $stmtProg->bind_param("ii", $userId, $challengeId);
             $stmtProg->execute();
@@ -133,7 +133,7 @@ if ($xpEarned > 0) {
 
             // award challenge bonus XP
             if ($challengeBonusXp > 0) {
-                $updateBonusSql = "UPDATE User SET xp = xp + ? WHERE user_id = ?";
+                $updateBonusSql = "UPDATE user SET xp = xp + ? WHERE user_id = ?";
                 $stmtBonus = $conn->prepare($updateBonusSql);
                 $stmtBonus->bind_param("ii", $challengeBonusXp, $userId);
                 $stmtBonus->execute();

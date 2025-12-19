@@ -32,7 +32,7 @@ include('../../includes/header.php');
             <?php while($challenge = $challengesResult->fetch_assoc()): ?>
                 <?php
                     // check if user has already completed this challenge
-                    $progSql = "SELECT completed_at FROM UserChallengeProgress WHERE user_id = ? AND challenge_id = ?";
+                    $progSql = "SELECT completed_at FROM userchallengeprogress WHERE user_id = ? AND challenge_id = ?";
                     $stmtP = $conn->prepare($progSql);
                     $stmtP->bind_param("ii", $userId, $challenge['challenge_id']);
                     $stmtP->execute();

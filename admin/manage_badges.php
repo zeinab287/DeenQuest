@@ -9,8 +9,8 @@ require_once '../config/db.php';
 $pageTitle = "Manage Badges";
 include('../includes/header.php');
 
-// fetch badges ordered by XP requirement
-$sql = "SELECT * FROM Badge ORDER BY xp_required ASC";
+// fetch all badges
+$sql = "SELECT * FROM badge ORDER BY xp_required ASC";
 $result = $conn->query($sql);
 ?>
 

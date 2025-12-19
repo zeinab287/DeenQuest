@@ -9,9 +9,9 @@ require_once '../../config/db.php';
 $pageTitle = "Mini Games Library";
 include('../../includes/header.php');
 
-// fetch all distinct subjects from game table
+// fetch unique subjects
 $subjects = [];
-$subSql = "SELECT DISTINCT subject FROM Game WHERE subject IS NOT NULL AND subject != '' ORDER BY subject ASC";
+$subSql = "SELECT DISTINCT subject FROM game WHERE subject IS NOT NULL AND subject != '' ORDER BY subject ASC";
 $subResult = $conn->query($subSql);
 if ($subResult) {
     while ($row = $subResult->fetch_assoc()) {
@@ -19,9 +19,9 @@ if ($subResult) {
     }
 }
 
-// fetch all distinct game types from the 'type' column
+// fetch unique types
 $gameTypes = [];
-$typeSql = "SELECT DISTINCT type FROM Game WHERE type IS NOT NULL AND type != '' ORDER BY type ASC";
+$typeSql = "SELECT DISTINCT type FROM game WHERE type IS NOT NULL AND type != '' ORDER BY type ASC";
 $typeResult = $conn->query($typeSql);
 if ($typeResult) {
     while ($row = $typeResult->fetch_assoc()) {
@@ -53,8 +53,8 @@ if (!empty($selectedType)) {
 // combine clauses
 $whereSql = implode(" AND ", $whereClauses);
 
-// the main query to fetch matching games based on filters
-$sql = "SELECT * FROM Game WHERE $whereSql ORDER BY title ASC";
+// fetch games based on filters
+$sql = "SELECT * FROM game WHERE $whereSql ORDER BY title ASC";
 
 $stmt = $conn->prepare($sql);
 // dynamically bind parameters if any filters are active

@@ -11,7 +11,7 @@ $gameId = intval($_GET['game_id']);
 $userId = $_SESSION['user_id'];
 
 // fetch game info
-$stmt = $conn->prepare("SELECT title, description, xp_reward, game_file_path FROM Game WHERE game_id = ?");
+$stmt = $conn->prepare("SELECT title, description, xp_reward, game_file_path FROM game WHERE game_id = ?");
 $stmt->bind_param("i", $gameId);
 $stmt->execute();
 $gameInfo = $stmt->get_result()->fetch_assoc();
@@ -34,7 +34,7 @@ if (strpos($gamePath, 'assets/games/') !== false) {
 $gameInfo['game_file_path'] = $gamePath;
 
 // check if user already completed this game
-$checkStmt = $conn->prepare("SELECT completion_id FROM GameCompletion WHERE user_id = ? AND game_id = ?");
+$checkStmt = $conn->prepare("SELECT completion_id FROM gamecompletion WHERE user_id = ? AND game_id = ?");
 $checkStmt->bind_param("ii", $userId, $gameId);
 $checkStmt->execute();
 $alreadyCompleted = $checkStmt->get_result()->num_rows > 0;

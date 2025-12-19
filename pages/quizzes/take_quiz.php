@@ -27,7 +27,7 @@ $quest = $questResult->fetch_assoc();
 $qStmt->close();
 
 // fetch quiz questions
-$sql = "SELECT question_id, question_text, option_a, option_b, option_c, option_d FROM QuizQuestion WHERE quest_id = ? ORDER BY question_id ASC";
+$sql = "SELECT question_id, question_text, option_a, option_b, option_c, option_d FROM quizquestion WHERE quest_id = ? ORDER BY question_id ASC";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $questId);
 $stmt->execute();

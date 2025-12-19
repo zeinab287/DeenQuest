@@ -14,10 +14,10 @@ $sql = "SELECT
             q.title, 
             q.subject, 
             uqp.score, 
-            uqp.xp_earned,
-            uqp.completed_at 
-        FROM UserQuestProgress uqp
-        JOIN Quest q ON uqp.quest_id = q.quest_id
+            quest.title,
+        quest.xp_reward AS total_xp_possible
+        FROM userquestprogress uqp
+        JOIN quest ON uqp.quest_id = quest.quest_id
         WHERE uqp.user_id = ?
         ORDER BY uqp.completed_at DESC";
 

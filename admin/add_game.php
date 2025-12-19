@@ -7,9 +7,9 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
 $pageTitle = "Add New Game";
 require_once '../config/db.php';
 
-// fetch existing game types from the 'type' column
+// fetch unique types for datalist
 $existingTypes = [];
-$typeSql = "SELECT DISTINCT type FROM Game WHERE type IS NOT NULL AND type != '' ORDER BY type ASC";
+$typeSql = "SELECT DISTINCT type FROM game WHERE type IS NOT NULL AND type != '' ORDER BY type ASC";
 $typeResult = $conn->query($typeSql);
 if ($typeResult) {
     while ($row = $typeResult->fetch_assoc()) {
