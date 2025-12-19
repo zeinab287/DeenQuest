@@ -23,6 +23,11 @@ if (substr($webRoot, -1) !== '/') {
     $webRoot .= '/';
 }
 
+// Fix for InfinityFree: if webRoot contains 'htdocs', we're in the web root
+if (strpos($webRoot, 'htdocs') !== false || $webRoot === '//') {
+    $webRoot = '/';
+}
+
 $currentUrl = $_SERVER['REQUEST_URI'];
 
 // get the name of the current file (i.e: "index.php", "learner_dashboard.php")
